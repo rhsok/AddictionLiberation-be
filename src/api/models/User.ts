@@ -1,23 +1,43 @@
-import { pool } from '../../conifg/db';
+import { prisma } from '../../conifg/db';
 
 interface User {
   username: string;
   email: string;
   password: string;
+  refreshToken?: string;
 }
 
 class UserModel {
   // 비동기 함수로 사용자를 생성하는 메서드
-  async createUser(user: User): Promise<void> {
-    // SQL 쿼리 문자열
-    const query = `INSERT INTO users(username, email, password) VALUES($1, $2, $3)`;
-    // 사용자 데이터 배열
-    const values = [user.username, user.email, user.password];
-    // 데이터베이스에 쿼리 실행
-    await pool.query(query, values);
+  async createUser(user: User): Promise<number> {
+    // 이메일 중복 확인
+    const existingUser = await prisma.user.findUnique({
+      where: {
+        email: user.email,
+      },
+    });
+
+    if (existingUser) {
+      throw new Error('이메일이 이미 존재합니다.');
+    }
+
+    const createdUser = await prisma.user.create({
+      data: {
+        username: user.username,
+        email: user.email,
+        password: user.password,
+        refreshToken: user.refreshToken,
+      },
+    });
+    return createdUser.id;
   }
 
-  // 필요한 경우 추가 사용자 관련 메소드를 여기에 구현
+  async setRefreshToken(userId: number, token: string): Promise<void> {
+    await prisma.user.update({
+      where: { id: userId },
+      data: { refreshToken: token },
+    });
+  }
 }
 
 export default new UserModel();
