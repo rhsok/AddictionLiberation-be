@@ -12,6 +12,7 @@ const prisma = new PrismaClient({
       url: process.env.DATABASE_URL,
     },
   },
+  log: ['query', 'info', 'warn', 'error'],
 });
 
 // Redis 클라이언트를 생성합니다. 환경 변수에서 REDIS_URI 값을 사용하여 Redis 서버에 연결합니다.

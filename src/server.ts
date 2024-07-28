@@ -2,14 +2,14 @@ import express from 'express';
 import cors from 'cors';
 import swaggerUi from 'swagger-ui-express';
 import dotenv from 'dotenv';
-import { redisClient, prisma } from './conifg/db';
+import { redisClient, prisma } from './config/db';
 import routes from './api/routes';
 
 // 환경 변수를 로드합니다.
 dotenv.config();
 
 // Swagger 문서를 로드합니다. 이 문서는 API의 구조와 동작을 정의합니다.
-const swaggerDocument = require('../swagger'); // Swagger 문서 파일 경로
+const swaggerDocument = require('./swagger'); // Swagger 문서 파일 경로
 
 // Express 애플리케이션 인스턴스를 생성합니다.
 const app: express.Application = express();

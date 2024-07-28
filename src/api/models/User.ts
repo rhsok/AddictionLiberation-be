@@ -1,10 +1,11 @@
-import { prisma } from '../../conifg/db';
+import { prisma } from '../../config/db';
 
 interface User {
+  id?: number;
   username: string;
   email: string;
   password: string;
-  refreshToken?: string;
+  refreshToken?: string | null;
 }
 
 class UserModel {
@@ -32,11 +33,34 @@ class UserModel {
     return createdUser.id;
   }
 
+  async findUserByEmail(email: string): Promise<User | null> {
+    return await prisma.user.findUnique({
+      where: { email },
+    });
+  }
+
   async setRefreshToken(userId: number, token: string): Promise<void> {
     await prisma.user.update({
       where: { id: userId },
       data: { refreshToken: token },
     });
+  }
+
+  /**
+   * 특정 ID로 사용자 검색
+   * @param id 사용자 ID
+   * @returns Promise<User | null>
+   */
+  async findById(id: number): Promise<User | null> {
+    try {
+      const user = await prisma.user.findUnique({
+        where: { id },
+      });
+      return user;
+    } catch (error) {
+      console.error('Error fetching user by ID:', error);
+      throw error;
+    }
   }
 }
 
