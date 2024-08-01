@@ -5,11 +5,12 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node dist/server.js",
-    "dev": "nodemon",
+    "dev": "dotenv -e .env.local nodemon",
     "build": "tsc",
     "migrate:dev": "prisma migrate dev --name",
     "generate": "prisma generate",
-    "migrate:deploy": "prisma migrate deploy"
+    "migrate:deploy": "prisma migrate deploy",
+    "prismaMigrate": "dotenv -e .env.local -- npx prisma migrate dev"
   },
   "keywords": [],
   "author": "",

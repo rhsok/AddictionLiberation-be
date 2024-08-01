@@ -1,8 +1,34 @@
 model Post {
   id        Int      @id @default(autoincrement())
   title     String
+  subtitle  String
   content   String
+  videoUrl  String
   published Boolean  @default(false)
   authorId  Int
-  author    User     @relation(fields: [authorId], references: [id])
+  author    User     @relation(fields: [authorId], references:[id])
+  category  Category @relation(fields: [categoryId], references:[id])
+  categoryId Int
+  publishedDate  DateTime
+
+  @@map("post")
+}
+
+model Category {
+  id       Int      @id @default(autoincrement())
+  name     String
+  descrition String 
+  post     Post[]
+
+ @@map("categories")
+}
+
+modle ArticleType {
+  id      Int       @id @default(autoincrement())
+  name    String   
+  descrition string?
+  order   Int
+  post  Post[]
+
+  @@map("post_types")
 }
