@@ -89,24 +89,13 @@ router.post('/login', userController.loginUser);
 
 /**
  * @swagger
- * /refresh_token:
+ * /api/users/refresh_token:
  *   post:
- *     summary: Refresh the access token using a refresh token
+ *     summary:  리프레시 토큰으로 엑세스토큰 리프레시
  *     tags: [Users]
- *     description: >
+ *     description:
  *       This endpoint refreshes the user's access token by verifying the refresh token sent in a cookie.
  *       It returns a new access token and optionally updates the refresh token.
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               userId:
- *                 type: number
- *                 description: The ID of the user for whom the token is to be refreshed.
- *                 example: 123
  *     responses:
  *       200:
  *         description: Successfully refreshed the access token.
@@ -120,11 +109,14 @@ router.post('/login', userController.loginUser);
  *                   description: The newly issued access token.
  *                   example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
  *       401:
- *         description: Unauthorized, invalid or expired refresh token.
+ *         description: No token provided or token is invalid.
+ *       403:
+ *         description: Invalid refresh token.
+ *       404:
+ *         description: User not found.
  *       500:
  *         description: Internal server error.
  */
-
 router.post('/refresh_token', userController.setRefreshToken);
 
 export default router;

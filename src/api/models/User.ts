@@ -40,10 +40,21 @@ class UserModel {
   }
 
   async setRefreshToken(userId: number, token: string): Promise<void> {
-    await prisma.user.update({
-      where: { id: userId },
-      data: { refreshToken: token },
-    });
+    console.log(`Setting refresh token for user ${userId}`); // 함수 시작 시 로그
+    try {
+      await prisma.user.update({
+        where: { id: userId },
+        data: { refreshToken: token },
+      });
+      console.log(`Refresh token updated successfully for user ${userId}`); // 성공적인 업데이트 로그
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error(
+          `Failed to set refresh token for user ${userId}: ${error.message}`
+        ); // 오류 발생 시 로그
+        throw new Error(`Failed to update refresh token: ${error.message}`); // 오류를 다시 throw하여 호출자에게 전달
+      }
+    }
   }
 
   /**

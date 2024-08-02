@@ -29,7 +29,7 @@ class UserController {
         return res
           .status(400)
           .send(
-            'Password must be least 8 character long and inclue at least one unmber one special character.'
+            'Password must be least 8 character long and include at least one unmber one special character.'
           );
       }
       // 비밀번호 해싱
@@ -59,6 +59,7 @@ class UserController {
 
       // 비밀번호 확인
       const isPasswordValid = await bcrypt.compare(password, user.password);
+
       if (!isPasswordValid) {
         return res.status(401).send('Invaild credentials.');
       }
@@ -66,26 +67,33 @@ class UserController {
       const accessToken = generateAccessToken(user.id);
       const refreshToken = generateRefreshToken(user.id);
 
+      // 리프레시 토큰 데이터베이스에 저장
+      await UserModel.setRefreshToken(user.id, refreshToken);
+
       sendRefreshToken(res, refreshToken);
       return res.status(200).json({ accessToken });
     } catch (error) {
       console.error('Login Error', error);
-      return res.status(500).send('Error logggin in user.');
+      return res.status(500).send('Error login in user.');
     }
   }
 
   async setRefreshToken(req: Request, res: Response): Promise<Response> {
+    console.log('Function start');
     const token = req.cookies.jid;
+    console.log('tk', token);
     if (!token) {
       return res.status(401).send('No token provided.');
     }
-
+    const secret = process.env.REFRESH_TOKEN_SECRET || '';
+    console.log('sc', secret);
     const decoded = verifyToken(token, secret);
+    console.log('de', decoded);
     if (!decoded) {
       return res.status(403).send('Invalid refresh token.');
     }
-    console.log(decoded);
-    const user = await UserModel.findById(decoded.userId);
+    console.log(decoded.id);
+    const user = await UserModel.findById(decoded.id);
     if (!user || !user.id) return res.status(404).send('User not found.');
     const accessToken = generateAccessToken(user.id);
     const refreshToken = generateRefreshToken(user.id);
