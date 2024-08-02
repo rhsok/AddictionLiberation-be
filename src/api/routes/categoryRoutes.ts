@@ -1,6 +1,5 @@
 import { Router } from 'express';
 import CategoryController from '../controllers/categoryController';
-import categoryController from '../controllers/categoryController';
 const router: Router = Router();
 
 /**
@@ -47,7 +46,7 @@ const router: Router = Router();
 
 /**
  * @swagger
- * /categories:
+ * /api/categories:
  *  get:
  *    summary: Returns the list of all the categories
  *    tags: [Categories]
@@ -61,47 +60,55 @@ const router: Router = Router();
  *              items:
  *                $ref: '#/components/schemas/Category'
  */
-router.get('/', CategoryController.getAllCategories);
+router.get('/categories', CategoryController.getAllCategories);
 
 /**
  * @swagger
- * /categories/{id}
- * get:
- *  summary: Get the category by id
- *  tags: [Categories]
- *  parameters:
- *    - in: path
- *      name: id
- *      scheam:
- *        type: integer
- *      required: true
- *      description: The category id
- *    responses:
- *      200:
- *        description: The category description by id
- *        contents:
- *          application/json:
- *            schema:
- *              $ref: '#/components/schemas/Category'
+ * /api/categories/{id}:
+ *   get:
+ *     summary: Get the category by id
+ *     tags: [Categories]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: The category id
+ *     responses:
+ *       200:
+ *         description: The category description by id
+ *         contents:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Category'
  *       404:
  *         description: The category was not found
  */
-
-router.get('/:id', categoryController.getById);
+router.get('/categories/:id', CategoryController.getById);
 
 /**
  * @swagger
- * /categories:
+ * /api/categories:
  *  post:
  *    summary: Create a new category
  *    tags: [Categories]
- *    requestBoy:
+ *    requestBody:
  *      required: true
  *      content:
- *        applicatioin/json:
+ *        application/json:
  *          schema:
- *            $ref: '#/components/schemas/Category'
- *    response:
+ *            type: object
+ *            properties:
+ *              name:
+ *                type: string
+ *                description: The name of the category
+ *                example: "Technology"
+ *              description:
+ *                type: string
+ *                description: Teh description of the category
+ *                example: "All about technology"
+ *    responses:
  *      201:
  *        description: The category was successfully created
  *        content:
@@ -111,44 +118,44 @@ router.get('/:id', categoryController.getById);
  *      500:
  *        description: Some server error
  */
-router.post('/', categoryController.createCategory);
+router.post('/categories', CategoryController.createCategory);
 
 /**
  * @swagger
  * /categories/{id}:
- *  put:
- *    summary: Update the category by the id
- *    tags: [Categories]
- *    parameters:
- *      - in: path
- *        name: id
- *        schema:
- *          type: integer
- *        required: true
- *        description: The category id
- *    requestbody:
- *      required: true
- *      content:
- *        application/json:
- *          schema:
- *            $ref: '#/components/schemas/Category'
- *    response:
- *      200:
- *        description: The category was updated
- *        content:
- *          application/json:
- *            schema:
- *              $ref: '#/components/schemas/Category'
- *      404:
- *        description: The category was not found
- *      500:
- *        description: Some error happend
+ *   put:
+ *     summary: Update the category by the id
+ *     tags: [Categories]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: The category id
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Category'
+ *     responses:
+ *       200:
+ *         description: The category was updated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Category'
+ *       404:
+ *         description: The category was not found
+ *       500:
+ *         description: Some error happend
  */
-router.put('/:id', categoryController.updateCategory);
+router.put('/:id', CategoryController.updateCategory);
 
 /**
  * @swagger
- * /categoires/{id}:
+ * /api/categoires/{id}:
  *  delete:
  *    summary: Remove the category by id
  *    tags: [Categories]
@@ -165,4 +172,6 @@ router.put('/:id', categoryController.updateCategory);
  *      404:
  *        description: The category was not found
  */
-router.delete('/:id', categoryController.deleteCategory);
+router.delete('/:id', CategoryController.deleteCategory);
+
+export default router;
