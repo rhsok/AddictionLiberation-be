@@ -7,7 +7,6 @@ interface UserPayload {
 
 // 액세스 토큰 생성, 15분 동안 유효
 export const generateAccessToken = (userId: number): string => {
-  console.log('ev', process.env.JWT_ACCESS_SECRET);
   // 액세스 토큰 생성, 15분 동안 유효
   return jwt.sign({ id: userId }, process.env.ACCESS_TOKEN_SECRET!, {
     expiresIn: '15m',

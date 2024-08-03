@@ -1,7 +1,6 @@
 import { Router } from 'express';
 // 사용자 컨트롤러를 임포트합니다.
 import userController from '../controllers/userController';
-// 새로운 Router 객체를 생성합니다.
 const router: Router = Router();
 
 /**

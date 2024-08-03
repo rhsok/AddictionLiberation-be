@@ -12,6 +12,7 @@ class CategoryController {
       return res.status(500).json({ error: 'Something went wrong' });
     }
   }
+  
   // ID로 카테고리를 가져오는 메서드
   async getById(req: Request, res: Response): Promise<Response> {
     try {
