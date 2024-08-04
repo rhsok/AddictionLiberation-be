@@ -29,7 +29,7 @@ app.use(cors(corsOptions));
 app.use(express.json());
 
 // '/api-docs' 경로에서 Swagger UI를 제공합니다. 이 UI를 통해 API를 문서화하고 상호 작용할 수 있습니다.
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // 기본 API 라우트를 설정합니다. 모든 API 엔드포인트는 '/api'로 시작합니다.
 app.use('/api', routes);

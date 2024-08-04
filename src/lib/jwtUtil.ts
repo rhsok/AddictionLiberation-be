@@ -2,19 +2,18 @@ import jwt from 'jsonwebtoken';
 import { Response } from 'express';
 
 interface UserPayload {
-  id: number;
+  id: string;
 }
 
 // 액세스 토큰 생성, 15분 동안 유효
-export const generateAccessToken = (userId: number): string => {
-  console.log('ev', process.env.JWT_ACCESS_SECRET);
+export const generateAccessToken = (userId: string): string => {
   // 액세스 토큰 생성, 15분 동안 유효
   return jwt.sign({ id: userId }, process.env.ACCESS_TOKEN_SECRET!, {
     expiresIn: '15m',
   });
 };
 
-export const generateRefreshToken = (userId: number): string => {
+export const generateRefreshToken = (userId: string): string => {
   return jwt.sign({ id: userId }, process.env.REFRESH_TOKEN_SECRET!, {
     expiresIn: '7d',
   });

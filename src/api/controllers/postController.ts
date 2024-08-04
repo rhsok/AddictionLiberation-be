@@ -23,7 +23,7 @@ class PostController {
 
   async getPostById(req: Request, res: Response): Promise<Response> {
     try {
-      const post = await PostModel.findPostById(parseInt(req.params.id));
+      const post = await PostModel.findPostById(req.params.id);
       if (post) {
         return res.status(200).json(post);
       } else {
@@ -46,7 +46,7 @@ class PostController {
   async updatePostContent(req: Request, res: Response): Promise<Response> {
     try {
       const updatedPost = await PostModel.updatePostContent(
-        parseInt(req.params.id),
+        req.body.id,
         req.body.content
       );
       return res

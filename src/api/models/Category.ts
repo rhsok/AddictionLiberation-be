@@ -3,19 +3,22 @@ import { prisma } from '../../config/db';
 interface CategoryType {
   id?: number;
   name: string;
-  description?: string;
+  description: string;
 }
 
 class CategoryModel {
   //카테고리 생성하는 매서드
   async createCategory(category: CategoryType): Promise<number> {
+    console.log('ci', category.id);
     const existingCategory = await prisma.category.findUnique({
       where: { name: category.name },
     });
+    console.log('re', existingCategory);
 
     if (existingCategory) {
       throw new Error('카테고리가 이미 존재합니다.');
     }
+    const { name, description = '' } = category; // 기본값 제공
 
     const createdCategory = await prisma.category.create({
       data: {
@@ -27,8 +30,14 @@ class CategoryModel {
   }
 
   // 모든 카테고리를 조회하는 매서드
-  async getAllCategories(): Promise<CategoryType | null> {
-    return await prisma.category.findMany();
+  async getAllCategories(): Promise<CategoryType[]> {
+    return await prisma.category.findMany({
+      select: {
+        id: true,
+        name: true,
+        description: true,
+      },
+    });
   }
 
   // 특정 ID로 카테고리를 조회하는 매서드

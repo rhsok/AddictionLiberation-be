@@ -1,7 +1,7 @@
 import { prisma } from '../../config/db';
 
 interface User {
-  id?: number;
+  id?: string;
   username: string;
   email: string;
   password: string;
@@ -10,7 +10,7 @@ interface User {
 
 class UserModel {
   // 비동기 함수로 사용자를 생성하는 메서드
-  async createUser(user: User): Promise<number> {
+  async createUser(user: User): Promise<string> {
     // 이메일 중복 확인
     const existingUser = await prisma.user.findUnique({
       where: {
@@ -39,7 +39,7 @@ class UserModel {
     });
   }
 
-  async setRefreshToken(userId: number, token: string): Promise<void> {
+  async setRefreshToken(userId: string, token: string): Promise<void> {
     console.log(`Setting refresh token for user ${userId}`); // 함수 시작 시 로그
     try {
       await prisma.user.update({
@@ -62,7 +62,7 @@ class UserModel {
    * @param id 사용자 ID
    * @returns Promise<User | null>
    */
-  async findById(id: number): Promise<User | null> {
+  async findById(id: string): Promise<User | null> {
     try {
       const user = await prisma.user.findUnique({
         where: { id },

@@ -60,7 +60,7 @@ const router: Router = Router();
  *              items:
  *                $ref: '#/components/schemas/Category'
  */
-router.get('/categories', CategoryController.getAllCategories);
+router.get('/', CategoryController.getAllCategories);
 
 /**
  * @swagger
@@ -85,7 +85,7 @@ router.get('/categories', CategoryController.getAllCategories);
  *       404:
  *         description: The category was not found
  */
-router.get('/categories/:id', CategoryController.getById);
+router.get('/:id', CategoryController.getById);
 
 /**
  * @swagger
@@ -118,11 +118,11 @@ router.get('/categories/:id', CategoryController.getById);
  *      500:
  *        description: Some server error
  */
-router.post('/categories', CategoryController.createCategory);
+router.post('/', CategoryController.createCategory);
 
 /**
  * @swagger
- * /categories/{id}:
+ * /api/categories/{id}:
  *   put:
  *     summary: Update the category by the id
  *     tags: [Categories]
@@ -155,7 +155,7 @@ router.put('/:id', CategoryController.updateCategory);
 
 /**
  * @swagger
- * /api/categoires/{id}:
+ * /api/categories/{id}:
  *  delete:
  *    summary: Remove the category by id
  *    tags: [Categories]
