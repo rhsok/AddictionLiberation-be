@@ -14,7 +14,7 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(uuid())
   username  String   @unique
   email     String   @unique
   password  String
@@ -24,18 +24,18 @@ model User {
 
 
 model Post {
-  id        Int      @id @default(autoincrement())
-  title     String
-  subtitle  String
-  content   String
-  videoUrl  String
-  published Boolean  @default(false)
-  authorId  Int
-  author    User     @relation(name: "UserPosts", fields: [authorId], references:[id])
-  categoryId Int
-  category  Category @relation("CategoryPosts", fields: [categoryId], references:[id])
-  articleTypeId Int?
-  articleType ArticleType? @relation(fields: [articleTypeId], references:[id])
+  id             String   @id @default(uuid())
+  title          String
+  subtitle       String
+  content        String
+  videoUrl       String
+  published      Boolean  @default(false)
+  authorId       String
+  author         User     @relation(name: "UserPosts", fields: [authorId], references:[id])
+  categoryId     Int
+  category       Category @relation("CategoryPosts", fields: [categoryId], references:[id])
+  postTypeId     Int?
+  postType       PostType? @relation(fields: [postTypeId], references:[id])
   publishedDate  DateTime
 
   @@map("post")
@@ -50,7 +50,7 @@ model Category {
  @@map("categories")
 }
 
-model ArticleType {
+model PostType {
   id      Int       @id @default(autoincrement())
   name    String   
   descrition String?
