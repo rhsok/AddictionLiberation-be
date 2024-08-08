@@ -27,11 +27,14 @@ class PostModel {
    * @returns 생성된 게시글의 Id
    */
   async createPost(post: PostType): Promise<string> {
+    console.log('1ss');
     const existingPosts = await prisma.post.findMany({
       where: { categoryId: post.categoryId },
       orderBy: { position: 'desc' },
       take: 1,
     });
+
+    console.log('existingPosts', existingPosts);
 
     const newPosition =
       existingPosts.length > 0 ? existingPosts[0].position + 1 : 1;

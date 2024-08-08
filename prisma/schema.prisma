@@ -52,11 +52,11 @@ model Category {
 }
 
 model PostType {
-  id      Int       @id @default(autoincrement())
-  name    String   
-  descrition String?
-  order   Int
-  post  Post[]
+  id            Int       @id @default(autoincrement())
+  name          String   
+  description   String?
+  order         Int       @unique
+  post          Post[]
 
   @@map("post_types")
 }
