@@ -73,7 +73,55 @@ const router: Router = Router();
  */
 router.post('/', postController.createPost);
 
+/**
+ * @swagger
+ * /api/posts/{id}:
+ *  get:
+ *    summary: Returns a specific post by Id
+ *    tags: [Posts]
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        required: true
+ *        schema:
+ *          type: string
+ *        description: The post id
+ *    response:
+ *      200:
+ *        description: Post found and returned
+ *      404:
+ *        description: Post not found
+ */
 router.get('/post/:id', postController.getPostById);
+
+/**
+ * @swagger
+ * /api/posts/{id}:
+ *  put:
+ *    summary: Update a post's content by ID
+ *    tags: [Posts]
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        required: true
+ *        schema:
+ *          type: string
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              content:
+ *                type: string
+ *
+ *    response:
+ *      200:
+ *        description: Post update successfully
+ *      500:
+ *        description: Server error
+ */
 router.put('posts/:id', postController.updatePostContent);
 
 export default router;
