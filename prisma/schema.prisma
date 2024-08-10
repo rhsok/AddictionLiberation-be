@@ -31,11 +31,10 @@ model Post {
   videoUrl       String
   published      Boolean  @default(false)
   authorId       String
-  author         User     @relation(name: "UserPosts", fields: [authorId], references:[id])
-  categoryId     Int
-  category       Category @relation("CategoryPosts", fields: [categoryId], references:[id])
+  author         User     @relation(name: "UserPosts", fields: [authorId], references:[id], onDelete: Cascade)
+  categories     PostCategory[]
   postTypeId     Int?
-  postType       PostType? @relation(fields: [postTypeId], references:[id])
+  postType       PostType? @relation(fields: [postTypeId], references:[id], onDelete: Restrict)
   publishedDate  DateTime
   position       Int
 
@@ -46,7 +45,7 @@ model Category {
   id       Int      @id @default(autoincrement())
   name     String   @unique
   description String 
-  post     Post[]   @relation("CategoryPosts")
+  posts       PostCategory[]
 
  @@map("categories")
 }
@@ -59,4 +58,14 @@ model PostType {
   post          Post[]
 
   @@map("post_types")
+}
+
+model PostCategory{
+  postId      String    @map("post_id")
+  post        Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
+  categoryId  Int       @map("category_id")
+  category    Category  @relation(fields:[categoryId], references: [id], onDelete: Cascade)
+
+  @@id([postId, categoryId])
+  @@map("post_category")
 }
