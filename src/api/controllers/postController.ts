@@ -1,4 +1,4 @@
-import PostModel from '../models/Post';
+import PostModel, { CreatePostInput } from '../models/Post';
 import { Request, Response } from 'express';
 import { PostType } from '../models/Post';
 
@@ -9,7 +9,7 @@ class PostController {
    */
   async createPost(req: Request, res: Response): Promise<Response> {
     try {
-      const postId = await PostModel.createPost(req.body as PostType);
+      const postId = await PostModel.createPost(req.body as CreatePostInput);
       return res
         .status(201)
         .json({ message: '게시글이 생성되었습니다', id: postId });
