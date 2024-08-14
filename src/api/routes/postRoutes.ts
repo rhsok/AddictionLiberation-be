@@ -4,16 +4,9 @@ const router: Router = Router();
 
 /**
  * @swagger
- * tag:
- *  name: Post
- *  description: The categories managing API
- */
-
-/**
- * @swagger
- *  get:
- *    summary: Returns the list of all the Post
- *    tags: [Post]
+ * tags:
+ *   name: Post
+ *   description: The posts managing API
  */
 
 /**
@@ -21,7 +14,7 @@ const router: Router = Router();
  * /api/posts:
  *  post:
  *    summary: 게시글 작성
- *    tags: [Posts]
+ *    tags: [Post]
  *    requestBody:
  *      required: true
  *      content:
@@ -32,7 +25,7 @@ const router: Router = Router();
  *              - title
  *              - content
  *              - authorId
- *              - categoryId
+ *              - categories
  *            properties:
  *              title:
  *                type: string
@@ -52,12 +45,9 @@ const router: Router = Router();
  *              authorId:
  *                type: string
  *                description: "게시글 작성자의 식별자"
- *              categoryId:
- *                type: integer
- *                description: "게시글 카테고리의 식별자"
  *              postTypeId:
  *                type: integer
- *                description: "게시글 유형의 식별자 (선택사항)"
+ *                description: "게시글 유형의 식별자"
  *              publishedDate:
  *                type: string
  *                format: date-time
@@ -65,7 +55,20 @@ const router: Router = Router();
  *              position:
  *                type: integer
  *                description: "카테고리 내 게시글의 위치 (선택사항)"
- *    request:
+ *              categories:
+ *                type: array
+ *                items:
+ *                  type: object
+ *                  required:
+ *                    - categoryId
+ *                  properties:
+ *                    categoryId:
+ *                      type: integer
+ *                      description: "게시글 카테고리의 식별자"
+ *                    isMain:
+ *                      type: boolean
+ *                      description: "메인 카테고리 여부 (선택사항)"
+ *    responses:
  *      201:
  *        description: Post created successfully
  *      500:
@@ -78,7 +81,7 @@ router.post('/', postController.createPost);
  * /api/posts/{id}:
  *  get:
  *    summary: Returns a specific post by Id
- *    tags: [Posts]
+ *    tags: [Post]
  *    parameters:
  *      - in: path
  *        name: id
@@ -86,20 +89,20 @@ router.post('/', postController.createPost);
  *        schema:
  *          type: string
  *        description: The post id
- *    response:
+ *    responses:
  *      200:
  *        description: Post found and returned
  *      404:
  *        description: Post not found
  */
-router.get('/post/:id', postController.getPostById);
+router.get('/:id', postController.getPostById);
 
 /**
  * @swagger
  * /api/posts/{id}:
  *  put:
  *    summary: Update a post's content by ID
- *    tags: [Posts]
+ *    tags: [Post]
  *    parameters:
  *      - in: path
  *        name: id
@@ -115,13 +118,22 @@ router.get('/post/:id', postController.getPostById);
  *            properties:
  *              content:
  *                type: string
- *
- *    response:
+ *              title:
+ *                type: string
+ *              subtitle:
+ *                type: string
+ *              videoUrl:
+ *                type: string
+ *              published:
+ *                type: boolean
+ *    responses:
  *      200:
- *        description: Post update successfully
+ *        description: Post updated successfully
+ *      404:
+ *        description: Post not found
  *      500:
  *        description: Server error
  */
-router.put('posts/:id', postController.updatePostContent);
+router.put('/:id', postController.updatePostContent);
 
 export default router;
