@@ -52,7 +52,7 @@ const router: Router = Router();
  *                type: string
  *                format: date-time
  *                description: "게시글 공개 예정일 (선택사항)"
- *              position:
+ *              order:
  *                type: integer
  *                description: "카테고리 내 게시글의 위치 (선택사항)"
  *              categories:

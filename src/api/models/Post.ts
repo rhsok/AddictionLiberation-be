@@ -22,7 +22,7 @@ export interface CreatePostInput {
   published: boolean;
   postTypeId: number;
   publishedDate: Date;
-  position: number;
+  order: number;
   categories: CategoryInput[];
 }
 
@@ -71,7 +71,7 @@ class PostModel {
         published: postData.published ?? false,
         postTypeId: postData.postTypeId,
         publishedDate: postData.publishedDate || new Date(),
-        position: postData.position || 0,
+        order: postData.order || 0,
         categories: {
           create: categoryOrders,
         },
