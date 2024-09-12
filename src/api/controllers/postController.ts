@@ -9,15 +9,33 @@ class PostController {
    */
   async createPost(req: Request, res: Response): Promise<Response> {
     try {
-      const postId = await PostModel.createPost(req.body as CreatePostInput);
+      const postId = await PostModel.createPost(
+        req,
+        req.body as CreatePostInput
+      );
       return res
         .status(201)
         .json({ message: '게시글이 생성되었습니다', id: postId });
     } catch (error) {
-      console.error('게시글 생성 에러');
+      console.error('게시글 생성 에러', error);
       return res
         .status(500)
         .json({ error: '게시글을 생성하는 동안 오류가 발생하였습니다.' });
+    }
+  }
+
+  async uploadImage(req: Request, res: Response): Promise<void> {
+    try {
+      if (!req.file) {
+        res.status(400).json({ message: 'No file uploaded' });
+        return;
+      }
+
+      console.log('3');
+      const filePath = await PostModel.saveImage(req.file);
+      res.status(200).json({ message: 'File uploaded successfully', filePath });
+    } catch (error) {
+      res.status(500).json({ message: 'Error uploading file', error });
     }
   }
 

@@ -1,5 +1,7 @@
 import { Router } from 'express';
 import postController from '../controllers/postController';
+import authenticateToken from '../middleware/authMiddleware';
+import { upload } from '../../lib/imageUpload';
 const router: Router = Router();
 
 /**
@@ -74,7 +76,7 @@ const router: Router = Router();
  *      500:
  *        description: Server error
  */
-router.post('/', postController.createPost);
+router.post('/', authenticateToken, postController.createPost);
 
 /**
  * @swagger
@@ -135,5 +137,62 @@ router.get('/:id', postController.getPostById);
  *        description: Server error
  */
 router.put('/:id', postController.updatePostContent);
+
+/**
+ * @swagger
+ * /api/posts/upload:
+ *   post:
+ *     summary: 이미지 업로드
+ *     tags: [Post]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               file:
+ *                 type: string
+ *                 format: binary
+ *                 description: 업로드할 이미지 파일
+ *     responses:
+ *       200:
+ *         description: 파일이 성공적으로 업로드되었습니다.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: File uploaded successfully
+ *                 filePath:
+ *                   type: string
+ *                   example: /uploads/your_image.jpg
+ *       400:
+ *         description: 파일이 업로드되지 않았습니다.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: No file uploaded
+ *       500:
+ *         description: 파일 업로드 중 오류가 발생했습니다.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Error uploading file
+ *                 error:
+ *                   type: object
+ *                   description: 오류에 대한 추가 정보
+ */
+router.post('/upload', upload.single('file'), postController.uploadImage);
 
 export default router;
