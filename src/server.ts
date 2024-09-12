@@ -21,6 +21,7 @@ const port: number | string = process.env.PORT || 8000;
 const corsOptions = {
   origin: process.env.CORS_ORIGIN, // 환경 변수에서 도메인 가져오기
   optionsSuccessStatus: 200, // 일부 레거시 브라우저의 호환성을 위해
+  credentials: true,
 };
 // CORS 미들웨어를 사용하여 모든 출처에서의 요청을 허용합니다.
 app.use(cors(corsOptions));

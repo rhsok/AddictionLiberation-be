@@ -1,4 +1,8 @@
+import path from 'path';
+import fs from 'fs';
 import { prisma } from '../../config/db';
+import { RequestWithUser } from '../middleware/authMiddleware';
+import { rejects } from 'assert';
 
 interface UpdatePost {
   content?: string;
@@ -16,7 +20,7 @@ export interface CategoryInput {
 export interface CreatePostInput {
   title: string;
   content: string;
-  authorId: string;
+  authorId: string | undefined;
   subtitle: string;
   videoUrl: string;
   published: boolean;
@@ -39,13 +43,24 @@ export interface PostType {
   categories: CategoryInput[];
 }
 
+interface File {
+  path: string;
+  originalname: string;
+}
+
+const uploadDirectory = path.join(__dirname, '../uploads');
+
 class PostModel {
   /**
    * @prisma post 게시글 데이터
    * @returns 생성된 게시글의 Id
    */
 
-  async createPost(postData: CreatePostInput): Promise<any> {
+  async createPost(
+    req: RequestWithUser,
+    postData: CreatePostInput
+  ): Promise<any> {
+    console.log('0', postData);
     const categoryOrders: CategoryOrder[] = await Promise.all(
       postData.categories.map(async (category) => {
         const count = await prisma.postCategory.count({
@@ -58,14 +73,17 @@ class PostModel {
         };
       })
     );
+    console.log('1', categoryOrders);
 
-    console.log('categoryOrder', categoryOrders);
+    const authorId = req.user?.id;
+
+    console.log('2', req.user?.id);
 
     return prisma.post.create({
       data: {
         title: postData.title,
         content: postData.content,
-        authorId: postData.authorId,
+        authorId: authorId || '',
         subtitle: postData.subtitle,
         videoUrl: postData.videoUrl,
         published: postData.published ?? false,
@@ -84,6 +102,12 @@ class PostModel {
         },
       },
     });
+  }
+
+  /**이미지 업로드 */
+  async saveImage(file: File): Promise<string> {
+    const filePath = file.path; // multer가 저장한 경로를 사용
+    return Promise.resolve(filePath); // 파일 경로를 반환
   }
 
   /**

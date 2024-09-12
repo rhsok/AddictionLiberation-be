@@ -56,7 +56,6 @@ class UserController {
       }
       const user = await UserModel.findUserByEmail(email);
       if (!user?.id) return res.status(401).send('Invaild credentials.');
-
       // 비밀번호 확인
       const isPasswordValid = await bcrypt.compare(password, user.password);
 
@@ -64,14 +63,13 @@ class UserController {
         return res.status(401).send('Invaild credentials.');
       }
       //JWT 토큰 생성
-      const accessToken = generateAccessToken(user.id);
+      const accessToken = generateAccessToken(user);
       const refreshToken = generateRefreshToken(user.id);
 
       // 리프레시 토큰 데이터베이스에 저장
       await UserModel.setRefreshToken(user.id, refreshToken);
-
-      sendRefreshToken(res, refreshToken);
-      return res.status(200).json({ accessToken });
+      //sendRefreshToken(res, refreshToken);
+      return res.status(200).json({ accessToken, refreshToken });
     } catch (error) {
       console.error('Login Error', error);
       return res.status(500).send('Error login in user.');
@@ -79,27 +77,32 @@ class UserController {
   }
 
   async setRefreshToken(req: Request, res: Response): Promise<Response> {
-    console.log('Function start');
-    const token = req.cookies.jid;
-    console.log('tk', token);
+    // const token = req.cookies.jwt;
+    const authHeader = req.headers['authorization'];
+    const token =
+      authHeader && authHeader.startsWith('Bearer ')
+        ? authHeader.split(' ')[1] // "Bearer " 이후의 토큰 추출
+        : null; // 토큰이 없으면 null로 설정
+
     if (!token) {
       return res.status(401).send('No token provided.');
     }
     const secret = process.env.REFRESH_TOKEN_SECRET || '';
-    console.log('sc', secret);
+
     const decoded = verifyToken(token, secret);
-    console.log('de', decoded);
+
     if (!decoded) {
       return res.status(403).send('Invalid refresh token.');
     }
     console.log(decoded.id);
     const user = await UserModel.findById(decoded.id);
+    console.log('유저찾기', user);
     if (!user || !user.id) return res.status(404).send('User not found.');
-    const accessToken = generateAccessToken(user.id);
+    const accessToken = generateAccessToken(user);
     const refreshToken = generateRefreshToken(user.id);
-
-    sendRefreshToken(res, refreshToken);
-    return res.json({ accessToken });
+    console.log('엑세스토큰 재발급', accessToken);
+    //sendRefreshToken(res, refreshToken);
+    return res.json({ token: accessToken });
   }
 }
 
