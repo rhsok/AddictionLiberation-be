@@ -73,11 +73,8 @@ class PostModel {
         };
       })
     );
-    console.log('1', categoryOrders);
 
     const authorId = req.user?.id;
-
-    console.log('2', req.user?.id);
 
     return prisma.post.create({
       data: {
@@ -108,6 +105,32 @@ class PostModel {
   async saveImage(file: File): Promise<string> {
     const filePath = file.path; // multer가 저장한 경로를 사용
     return Promise.resolve(filePath); // 파일 경로를 반환
+  }
+
+  // 특정 카테고리의 isMain이 true인 게시글 가져오기
+  async getMainPostsByCategories(
+    categoryIds: number[]
+  ): Promise<{ [key: number]: any[] }> {
+    const results = await Promise.all(
+      categoryIds.map(async (categoryId) => {
+        const posts = await prisma.postCategory.findMany({
+          where: {
+            categoryId: categoryId,
+            isMain: true,
+          },
+          take: 4, // 게시글 4개 가져오기
+          include: {
+            post: true,
+          },
+        });
+
+        // 카테고리 ID를 키로 사용하여 결과 객체를 반환
+        return { [categoryId]: posts.map((item) => item.post) };
+      })
+    );
+
+    // 배열을 객체로 변환
+    return results.reduce((acc, curr) => ({ ...acc, ...curr }), {});
   }
 
   /**

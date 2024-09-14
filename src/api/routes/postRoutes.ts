@@ -80,6 +80,64 @@ router.post('/', authenticateToken, postController.createPost);
 
 /**
  * @swagger
+ * /api/posts/main-posts:
+ *  get:
+ *    summary: 각 카테고리의 isMain이 true인 게시글 목록을 가져옵니다.
+ *    tags: [Post]
+ *    responses:
+ *      200:
+ *        description: 게시글 목록이 성공적으로 반환되었습니다.
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: array
+ *              items:
+ *                type: object
+ *                properties:
+ *                  postId:
+ *                    type: string
+ *                    description: "게시글 ID"
+ *                  title:
+ *                    type: string
+ *                    description: "게시글 제목"
+ *                  subtitle:
+ *                    type: string
+ *                    description: "게시글 서브 제목"
+ *                  content:
+ *                    type: string
+ *                    description: "게시글 내용"
+ *                  videoUrl:
+ *                    type: string
+ *                    description: "게시글에 포함된 비디오 URL"
+ *                  published:
+ *                    type: boolean
+ *                    description: "게시글의 공개 여부"
+ *                  publishedDate:
+ *                    type: string
+ *                    format: date-time
+ *                    description: "게시글 공개 날짜"
+ *                  categories:
+ *                    type: array
+ *                    items:
+ *                      type: object
+ *                      properties:
+ *                        categoryId:
+ *                          type: integer
+ *                          description: "카테고리 ID"
+ *                        isMain:
+ *                          type: boolean
+ *                          description: "해당 카테고리에서 메인 게시글 여부"
+ *      400:
+ *        description: 잘못된 요청 파라미터입니다.
+ *      404:
+ *        description: 게시글을 찾을 수 없습니다.
+ *      500:
+ *        description: 서버 오류
+ */
+router.get('/main-posts', postController.getMainPosts);
+
+/**
+ * @swagger
  * /api/posts/{id}:
  *  get:
  *    summary: Returns a specific post by Id

@@ -39,6 +39,16 @@ class PostController {
     }
   }
 
+  async getMainPosts(req: Request, res: Response) {
+    const categoryIds = [1, 2, 3]; // 카테고리 ID 배열
+    try {
+      const mainPosts = await PostModel.getMainPostsByCategories(categoryIds);
+      res.json(mainPosts);
+    } catch (error) {
+      res.status(500).json({ error: '게시글 조회 실패' });
+    }
+  }
+
   async getPostById(req: Request, res: Response): Promise<Response> {
     try {
       const post = await PostModel.findPostById(req.params.id);
