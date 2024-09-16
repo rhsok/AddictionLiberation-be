@@ -64,7 +64,7 @@ router.get('/', CategoryController.getAllCategories);
 
 /**
  * @swagger
- * /api/categories/{id}:
+ * /api/category/{id}:
  *   get:
  *     summary: Get the category by id
  *     tags: [Categories]
@@ -85,7 +85,7 @@ router.get('/', CategoryController.getAllCategories);
  *       404:
  *         description: The category was not found
  */
-router.get('/:id', CategoryController.getById);
+router.get('/:id', CategoryController.getCategory);
 
 /**
  * @swagger

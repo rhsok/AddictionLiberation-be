@@ -12,11 +12,12 @@ class CategoryController {
       return res.status(500).json({ error: 'Something went wrong' });
     }
   }
-  
+
   // ID로 카테고리를 가져오는 메서드
-  async getById(req: Request, res: Response): Promise<Response> {
+  async getCategory(req: Request, res: Response): Promise<Response> {
     try {
       const { id } = req.params;
+      console.log('id', id);
       const categoryId = parseInt(id, 10);
       if (isNaN(categoryId)) {
         return res.status(400).json({ error: 'Invaild category Id' });

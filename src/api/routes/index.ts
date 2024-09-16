@@ -22,7 +22,7 @@ router.get('/', (req: Request, res: Response) => {
 
 router.use('/users', userRoutes);
 
-router.use('/categories', categoryRoutes);
+router.use('/category', categoryRoutes);
 
 router.use('/posts', postRoutes);
 

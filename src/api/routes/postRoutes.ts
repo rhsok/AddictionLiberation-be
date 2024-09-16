@@ -136,6 +136,8 @@ router.post('/', authenticateToken, postController.createPost);
  */
 router.get('/main-posts', postController.getMainPosts);
 
+router.get('/categories/:id');
+
 /**
  * @swagger
  * /api/posts/{id}:
