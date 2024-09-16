@@ -118,7 +118,7 @@ class PostModel {
             categoryId: categoryId,
             isMain: true,
           },
-          take: 4, // 게시글 4개 가져오기
+          take: 3, // 게시글 4개 가져오기
           include: {
             post: true,
           },

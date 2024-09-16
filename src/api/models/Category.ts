@@ -41,9 +41,12 @@ class CategoryModel {
   }
 
   // 특정 ID로 카테고리를 조회하는 매서드
-  async getCategoryById(id: number): Promise<CategoryType | null> {
-    return await prisma.category.findUnique({
-      where: { id },
+  async getCategoryById(id: number): Promise<any> {
+    return await prisma.postCategory.findMany({
+      where: { categoryId: id },
+      include: {
+        post: true,
+      },
     });
   }
 
