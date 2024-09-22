@@ -6,6 +6,34 @@ interface CategoryType {
   description: string;
 }
 
+interface Post {
+  id: string;
+  title: string;
+  subtitle: string;
+  content: string;
+  videoUrl: string;
+  published: boolean;
+  authorId: string;
+  postTypeId: number | null;
+  publishedDate: Date;
+  createdAt: Date;
+  updatedAt: Date;
+  order: number | null;
+}
+
+interface PostCategory {
+  postId: string;
+  categoryId: number;
+  isMain: boolean;
+  order: number;
+  post: Post;
+}
+
+interface CategoryResult {
+  main: Post[];
+  normal: Post[];
+}
+
 class CategoryModel {
   //카테고리 생성하는 매서드
   async createCategory(category: CategoryType): Promise<number> {
@@ -40,14 +68,34 @@ class CategoryModel {
     });
   }
 
-  // 특정 ID로 카테고리를 조회하는 매서드
-  async getCategoryById(id: number): Promise<any> {
-    return await prisma.postCategory.findMany({
+  // 특정 ID로 카테고리를 조회하는 메서드
+  async getCategoryById(id: number): Promise<CategoryResult> {
+    const categories: PostCategory[] = await prisma.postCategory.findMany({
       where: { categoryId: id },
       include: {
         post: true,
       },
     });
+
+    const result: CategoryResult = {
+      main: [],
+      normal: [],
+    };
+
+    categories.forEach((category: PostCategory) => {
+      const post = category.post;
+      if (post) {
+        if (post.postTypeId === 1) {
+          // main 타입
+          result.main.push(post);
+        } else if (post.postTypeId === 2) {
+          // normal 타입
+          result.normal.push(post);
+        }
+      }
+    });
+
+    return result;
   }
 
   // 카테고리를 업데이트하는 매서드
