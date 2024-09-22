@@ -103,8 +103,9 @@ class PostModel {
 
   /**이미지 업로드 */
   async saveImage(file: File): Promise<string> {
-    const filePath = file.path; // multer가 저장한 경로를 사용
-    return Promise.resolve(filePath); // 파일 경로를 반환
+    const fileName = file.path.split('/').slice(-1);
+    const fileUrl = `http://localhost:8000/api/posts/images/${fileName}`;
+    return Promise.resolve(fileUrl); // 파일 경로를 반환
   }
 
   // 특정 카테고리의 isMain이 true인 게시글 가져오기
@@ -140,15 +141,6 @@ class PostModel {
   async findPostById(postId: string): Promise<any> {
     const post = await prisma.post.findUnique({
       where: { id: postId },
-      include: {
-        categories: {
-          // `categories`는 `Post`와 `Category`를 연결하는 중개 테이블을 통해 접근
-          include: {
-            category: true, // 중개 테이블 내에서 실제 카테고리 정보를 포함
-          },
-        },
-        postType: true,
-      },
     });
     return post;
   }

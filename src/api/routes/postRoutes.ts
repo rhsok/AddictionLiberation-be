@@ -136,7 +136,7 @@ router.post('/', authenticateToken, postController.createPost);
  */
 router.get('/main-posts', postController.getMainPosts);
 
-router.get('/categories/:id');
+router.get('/:id', postController.getPostById);
 
 /**
  * @swagger
@@ -254,5 +254,8 @@ router.put('/:id', postController.updatePostContent);
  *                   description: 오류에 대한 추가 정보
  */
 router.post('/upload', upload.single('file'), postController.uploadImage);
+
+// 이미지 제공 엔드포인트
+router.get('/images/:filename', postController.getImage);
 
 export default router;

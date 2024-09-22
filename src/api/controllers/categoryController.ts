@@ -17,7 +17,6 @@ class CategoryController {
   async getCategory(req: Request, res: Response): Promise<Response> {
     try {
       const { id } = req.params;
-      console.log('id', id);
       const categoryId = parseInt(id, 10);
       if (isNaN(categoryId)) {
         return res.status(400).json({ error: 'Invaild category Id' });
