@@ -28,6 +28,7 @@ export interface CreatePostInput {
   publishedDate: Date;
   order: number;
   categories: CategoryInput[];
+  thumbnailImageURL: string;
 }
 
 export interface CategoryOrder {
@@ -87,6 +88,7 @@ class PostModel {
         postTypeId: postData.postTypeId,
         publishedDate: postData.publishedDate || new Date(),
         order: postData.order || 0,
+        thumbnailImageURL: postData.thumbnailImageURL,
         categories: {
           create: categoryOrders,
         },
@@ -126,7 +128,7 @@ class PostModel {
         });
 
         // 카테고리 ID를 키로 사용하여 결과 객체를 반환
-        return { [categoryId]: posts.map((item) => item.post) };
+        return { [categoryId]: posts.map((item: any) => item.post) };
       })
     );
 
