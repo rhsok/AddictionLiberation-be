@@ -52,7 +52,7 @@ class PostController {
   }
 
   async getMainPosts(req: Request, res: Response) {
-    const categoryIds = [1, 2, 3]; // 카테고리 ID 배열
+    const categoryIds = [1, 2, 3, 4]; // 카테고리 ID 배열
     try {
       const mainPosts = await PostModel.getMainPostsByCategories(categoryIds);
       res.json(mainPosts);
@@ -86,9 +86,9 @@ class PostController {
    */
   async updatePostContent(req: Request, res: Response): Promise<Response> {
     try {
-      const updatedPost = await PostModel.updatePostContent(
-        req.body.id,
-        req.body.content
+      const updatedPost = await PostModel.updatePostHandler(
+        req.params.id,
+        req.body
       );
       return res
         .status(200)

@@ -136,7 +136,7 @@ router.post('/', authenticateToken, postController.createPost);
  */
 router.get('/main-posts', postController.getMainPosts);
 
-router.get('/:id', postController.getPostById);
+// router.get('/:id', postController.getPostById);
 
 /**
  * @swagger
@@ -162,15 +162,18 @@ router.get('/:id', postController.getPostById);
 /**
  * @swagger
  * /api/posts/{id}:
- *  put:
- *    summary: Update a post's content by ID
+ *  patch:
+ *    summary: Update a post by ID with partial data
  *    tags: [Post]
+ *    security:
+ *      - AccessToken : []
  *    parameters:
  *      - in: path
  *        name: id
  *        required: true
  *        schema:
  *          type: string
+ *        description: The post id
  *    requestBody:
  *      required: true
  *      content:
@@ -178,25 +181,70 @@ router.get('/:id', postController.getPostById);
  *          schema:
  *            type: object
  *            properties:
- *              content:
- *                type: string
  *              title:
  *                type: string
+ *                description: "게시글의 제목"
  *              subtitle:
  *                type: string
+ *                description: "게시글의 부제목 (선택사항)"
+ *              content:
+ *                type: string
+ *                description: "게시글의 내용"
  *              videoUrl:
  *                type: string
+ *                description: "게시글에 포함될 비디오 URL (선택사항)"
  *              published:
  *                type: boolean
+ *                description: "게시글의 공개 여부"
+ *              postTypeId:
+ *                type: integer
+ *                description: "게시글 유형의 식별자"
+ *              updatedAt:
+ *                type: string
+ *                format: date-time
+ *                description: "게시글 공개 예정일 (선택사항)"
+ *              order:
+ *                type: integer
+ *                description: "카테고리 내 게시글의 위치 (선택사항)"
+ *              categories:
+ *                type: array
+ *                items:
+ *                  type: object
+ *                  properties:
+ *                    categoryId:
+ *                      type: integer
+ *                      description: "게시글 카테고리의 식별자"
+ *                    isMain:
+ *                      type: boolean
+ *                      description: "메인 카테고리 여부 (선택사항)"
+ *                    order:
+ *                      type: integer
+ *                      description: "카테고리 내 게시글의 순서"
+ *              thumbnailURL:
+ *                type: string
+ *                description: "섬네일 URL"
  *    responses:
  *      200:
  *        description: Post updated successfully
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                message:
+ *                  type: string
+ *                  example: 게시글이 성공적으로 업데이트되었습니다.
+ *                updatedPost:
+ *                  type: object
+ *                  description: 업데이트된 게시글의 데이터
+ *      400:
+ *        description: 잘못된 요청 파라미터입니다.
  *      404:
- *        description: Post not found
+ *        description: 게시글을 찾을 수 없습니다.
  *      500:
- *        description: Server error
+ *        description: 서버 오류가 발생했습니다.
  */
-router.put('/:id', postController.updatePostContent);
+router.patch('/:id', authenticateToken, postController.updatePostContent);
 
 /**
  * @swagger

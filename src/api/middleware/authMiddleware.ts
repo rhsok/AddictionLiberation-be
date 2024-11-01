@@ -21,6 +21,7 @@ const authenticateToken = (
 ) => {
   // Authorization 헤더에서 토큰 추출
   const authHeader = req.headers['authorization'];
+  console.log('ah', authHeader);
   const token = authHeader && authHeader.split(' ')[1];
   // console.log('토큰확인1', token);
 

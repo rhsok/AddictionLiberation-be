@@ -89,7 +89,7 @@ router.get('/:id', CategoryController.getCategory);
 
 /**
  * @swagger
- * /api/categories:
+ * /api/category:
  *  post:
  *    summary: Create a new category
  *    tags: [Categories]

@@ -4,13 +4,18 @@ import { prisma } from '../../config/db';
 import { RequestWithUser } from '../middleware/authMiddleware';
 import { rejects } from 'assert';
 
-interface UpdatePost {
-  content?: string;
+type UpdatePost = {
   title?: string;
   subtitle?: string;
+  content?: string;
   videoUrl?: string;
   published?: boolean;
-}
+  postTypeId?: number;
+  publishedDate?: Date;
+  order?: number;
+  thumbnailImageURL?: string;
+  categories?: { categoryId: number; isMain: boolean; order: number }[];
+};
 
 export interface CategoryInput {
   categoryId: number; // 이 속성을 추가
@@ -143,6 +148,15 @@ class PostModel {
   async findPostById(postId: string): Promise<any> {
     const post = await prisma.post.findUnique({
       where: { id: postId },
+      include: {
+        categories: {
+          select: {
+            category: true,
+            isMain: true,
+            order: true,
+          },
+        },
+      },
     });
     return post;
   }
@@ -152,19 +166,43 @@ class PostModel {
    * @param content 새로운 콘텐츠
    * @returns 업데이트된 게시글
    */
-  async updatePostContent(
+  async updatePostHandler(
     postId: string,
     updateData: UpdatePost
   ): Promise<any> {
+    console.log('postId:', postId);
+    console.log('updateData:', updateData);
+
+    const publishedDate = updateData.publishedDate
+      ? updateData.publishedDate
+      : (await prisma.post.findUnique({ where: { id: postId } }))
+          ?.publishedDate;
+
     return await prisma.post.update({
       where: { id: postId },
       data: {
-        content: updateData.content ?? '',
         title: updateData.title,
         subtitle: updateData.subtitle,
+        content: updateData.content,
         videoUrl: updateData.videoUrl,
-        published: updateData.published ?? false,
+        published: updateData.published,
+        publishedDate,
+        order: updateData.order,
+        thumbnailImageURL: updateData.thumbnailImageURL,
+        postTypeId: updateData.postTypeId,
+        categories: updateData.categories
+          ? {
+              deleteMany: {}, // 기존 연결을 삭제
+              create: updateData.categories.map((category) => ({
+                categoryId: category.categoryId,
+                isMain: category.isMain,
+                order: category.order,
+              })),
+            }
+          : undefined,
+        updatedAt: new Date(),
       },
+
       include: {
         author: true,
         categories: {
