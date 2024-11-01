@@ -8,6 +8,15 @@ const options = {
       version: '1.0.0',
       description: 'node Exporess API',
     },
+    components: {
+      securitySchemes: {
+        AccessToken: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+        },
+      },
+    },
     servers: [{ url: 'http://localhost:8000' }],
   },
   apis: ['./src/api/routes/*.ts'],
