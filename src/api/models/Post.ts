@@ -204,14 +204,11 @@ class PostModel {
       },
 
       include: {
-        author: true,
         categories: {
-          // 여기서 categories로 수정
           include: {
             category: true,
           },
         },
-        postType: true,
       },
     });
     return updateData;
