@@ -81,8 +81,6 @@ class PostController {
 
   /**
    * 게시글 내용 업데이트
-   * @param req Express의 Request 객체
-   * @param res Express의 Response 객체
    */
   async updatePostContent(req: Request, res: Response): Promise<Response> {
     try {
@@ -98,6 +96,26 @@ class PostController {
       return res
         .status(500)
         .json({ error: '게시글을 업데이트하는 동안 오류가 발생했습니다.' });
+    }
+  }
+
+  async softeDeletePost(req: Request, res: Response): Promise<Response> {
+    console.log('req', req.params.id);
+    try {
+      const postId = req.params.id;
+      const success = await PostModel.deletePostById(postId);
+      if (success) {
+        return res.status(200).json({ message: '게시글이 삭제되었습니다.' });
+      } else {
+        return res
+          .status(404)
+          .json({ message: '해당 ID의 게시글을 찾을 수 없습니다.' });
+      }
+    } catch (error) {
+      console.error('게시글 삭제 에러:', error);
+      return res
+        .status(500)
+        .json({ error: '게시글을 삭제하는 동안 오류가 발생했습니다.' });
     }
   }
 }

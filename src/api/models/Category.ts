@@ -19,6 +19,7 @@ interface Post {
   createdAt: Date;
   updatedAt: Date;
   order: number | null;
+  deletedAt: Date | null;
 }
 
 interface PostCategory {
@@ -68,7 +69,7 @@ class CategoryModel {
     });
   }
 
-  // 특정 ID로 카테고리를 조회하는 메서드
+  // 특정 ID로 카테고리 조회하는 메서드
   async getCategoryById(id: number): Promise<CategoryResult> {
     const categories: PostCategory[] = await prisma.postCategory.findMany({
       where: { categoryId: id },
@@ -76,6 +77,7 @@ class CategoryModel {
         post: true,
       },
     });
+    console.log('cate', categories);
 
     const result: CategoryResult = {
       main: [],
@@ -85,10 +87,10 @@ class CategoryModel {
     categories.forEach((category: PostCategory) => {
       const post = category.post;
       if (post) {
-        if (post.postTypeId === 1) {
+        if (post.postTypeId === 1 && post.deletedAt == null) {
           // main 타입
           result.main.push(post);
-        } else if (post.postTypeId === 2) {
+        } else if (post.postTypeId === 2 && post.deletedAt == null) {
           // normal 타입
           result.normal.push(post);
         }
