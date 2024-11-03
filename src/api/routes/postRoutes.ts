@@ -306,4 +306,53 @@ router.post('/upload', upload.single('file'), postController.uploadImage);
 // 이미지 제공 엔드포인트
 router.get('/images/:filename', postController.getImage);
 
+/**
+ * @swagger
+ * /api/posts/{id}:
+ *   delete:
+ *     summary: 소프트 딜리트를 사용하여 게시글을 삭제합니다.
+ *     description: 게시글의 `deletedAt` 필드를 현재 시간으로 설정하여 소프트 딜리트를 수행합니다.
+ *     tags:
+ *       - Post
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: 삭제할 게시글의 ID
+ *     responses:
+ *       200:
+ *         description: 게시글이 소프트 삭제되었습니다.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: 게시글이 소프트 삭제되었습니다.
+ *       404:
+ *         description: 해당 ID의 게시글을 찾을 수 없습니다.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: 해당 ID의 게시글을 찾을 수 없습니다.
+ *       500:
+ *         description: 게시글을 소프트 삭제하는 동안 오류가 발생했습니다.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: 게시글을 소프트 삭제하는 동안 오류가 발생했습니다.
+ */
+router.delete('/:id', postController.softeDeletePost);
+
 export default router;

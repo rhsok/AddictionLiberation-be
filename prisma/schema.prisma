@@ -29,6 +29,7 @@ model Post {
   publishedDate     DateTime
   createdAt         DateTime       @default(now())
   updatedAt         DateTime       @updatedAt
+  deletedAt         DateTime?
   order             Int?
   author            User           @relation("UserPosts", fields: [authorId], references: [id], onDelete: Cascade)
   postType          PostType?      @relation(fields: [postTypeId], references: [id], onDelete: Restrict)

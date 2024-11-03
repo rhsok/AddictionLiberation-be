@@ -1,8 +1,6 @@
 import path from 'path';
-import fs from 'fs';
 import { prisma } from '../../config/db';
 import { RequestWithUser } from '../middleware/authMiddleware';
-import { rejects } from 'assert';
 
 type UpdatePost = {
   title?: string;
@@ -147,7 +145,7 @@ class PostModel {
    */
   async findPostById(postId: string): Promise<any> {
     const post = await prisma.post.findUnique({
-      where: { id: postId },
+      where: { id: postId, deletedAt: null },
       include: {
         categories: {
           select: {
@@ -175,8 +173,11 @@ class PostModel {
 
     const publishedDate = updateData.publishedDate
       ? updateData.publishedDate
-      : (await prisma.post.findUnique({ where: { id: postId } }))
-          ?.publishedDate;
+      : (
+          await prisma.post.findUnique({
+            where: { id: postId },
+          })
+        )?.publishedDate;
 
     return await prisma.post.update({
       where: { id: postId },
@@ -204,17 +205,23 @@ class PostModel {
       },
 
       include: {
-        author: true,
         categories: {
-          // 여기서 categories로 수정
           include: {
             category: true,
           },
         },
-        postType: true,
       },
     });
     return updateData;
+  }
+
+  async deletePostById(postId: string): Promise<boolean> {
+    const a = await prisma.post.update({
+      where: { id: postId },
+      data: { deletedAt: new Date() },
+    });
+    console.log('1', a);
+    return true;
   }
 }
 
