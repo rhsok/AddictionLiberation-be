@@ -11,6 +11,7 @@ type UpdatePost = {
   postTypeId?: number;
   publishedDate?: Date;
   order?: number;
+  viewCount: number;
   thumbnailImageURL?: string;
   categories?: { categoryId: number; isMain: boolean; order: number }[];
 };
@@ -144,8 +145,13 @@ class PostModel {
    * @returns 게시글 데이터 또는 null
    */
   async findPostById(postId: string): Promise<any> {
-    const post = await prisma.post.findUnique({
+    const post = await prisma.post.update({
       where: { id: postId, deletedAt: null },
+      data: {
+        viewCount: {
+          increment: 1,
+        },
+      },
       include: {
         categories: {
           select: {

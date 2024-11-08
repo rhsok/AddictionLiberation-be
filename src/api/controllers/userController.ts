@@ -104,6 +104,43 @@ class UserController {
     //sendRefreshToken(res, refreshToken);
     return res.json({ token: accessToken });
   }
+
+  async logoutUser(req: Request, res: Response): Promise<Response> {
+    try {
+      const authHeader = req.headers['authorization'];
+      const token =
+        authHeader && authHeader.startsWith('Bearer ')
+          ? authHeader.split(' ')[1]
+          : null;
+      if (!token) {
+        return res.status(401).send('No token provieded.');
+      }
+      const decoded = verifyToken(token, secret);
+      if (!decoded) {
+        return res.status(403).send('Invalid token.');
+      }
+      const userId = decoded.id;
+      const user = await UserModel.findById(userId);
+      if (!user) {
+        return res.status(404).send('User not found.');
+      }
+
+      // 사용자 리프레시 토큰을 데이터베이스에서 제거
+      await UserModel.removeRefreshToken(userId);
+
+      res.clearCookie('jwt', {
+        // httpOnly: true,
+        // secure: true,
+        // sameSite: 'strict',
+      });
+
+      // 응답 설정 - 클라이언트에서 저장된 토큰을 제거하도록 지시
+      return res.status(200).send('Logged out successfully.');
+    } catch (error) {
+      console.error('Logout Error', error);
+      return res.status(500).send('Error logging out user.');
+    }
+  }
 }
 
 export default new UserController();

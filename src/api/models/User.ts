@@ -9,7 +9,7 @@ interface User {
 }
 
 class UserModel {
-  // 비동기 함수로 사용자를 생성하는 메서드
+  // 사용자를 생성
   async createUser(user: User): Promise<string> {
     // 이메일 중복 확인
     const existingUser = await prisma.user.findUnique({
@@ -71,6 +71,25 @@ class UserModel {
     } catch (error) {
       console.error('Error fetching user by ID:', error);
       throw error;
+    }
+  }
+
+  async removeRefreshToken(userId: string): Promise<void> {
+    try {
+      await prisma.user.update({
+        where: { id: userId },
+        data: { refreshToken: null },
+      });
+    } catch (error) {
+      console.error(
+        `Failed to remove refresh token for user ${userId}:`,
+        error
+      );
+      throw new Error(
+        `Failed to remove refresh token: ${
+          error instanceof Error ? error.message : 'Unknown error'
+        }`
+      );
     }
   }
 }

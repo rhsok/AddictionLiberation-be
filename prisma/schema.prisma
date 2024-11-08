@@ -31,6 +31,7 @@ model Post {
   updatedAt         DateTime       @updatedAt
   deletedAt         DateTime?
   order             Int?
+  viewCount        Int           @default(0)
   author            User           @relation("UserPosts", fields: [authorId], references: [id], onDelete: Cascade)
   postType          PostType?      @relation(fields: [postTypeId], references: [id], onDelete: Restrict)
   categories        PostCategory[]
