@@ -68,7 +68,9 @@ class UserController {
 
       // 리프레시 토큰 데이터베이스에 저장
       await UserModel.setRefreshToken(user.id, refreshToken);
-      //sendRefreshToken(res, refreshToken);
+      // 쿠키에 refreshToken 저장
+      sendRefreshToken(res, refreshToken);
+
       return res.status(200).json({ accessToken, refreshToken });
     } catch (error) {
       console.error('Login Error', error);
@@ -107,6 +109,13 @@ class UserController {
 
   async logoutUser(req: Request, res: Response): Promise<Response> {
     try {
+      //클라이언트의 쿠키 삭제
+      res.clearCookie('jwt', {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'strict',
+      });
+
       const authHeader = req.headers['authorization'];
       const token =
         authHeader && authHeader.startsWith('Bearer ')
@@ -127,12 +136,6 @@ class UserController {
 
       // 사용자 리프레시 토큰을 데이터베이스에서 제거
       await UserModel.removeRefreshToken(userId);
-
-      res.clearCookie('jwt', {
-        // httpOnly: true,
-        // secure: true,
-        // sameSite: 'strict',
-      });
 
       // 응답 설정 - 클라이언트에서 저장된 토큰을 제거하도록 지시
       return res.status(200).send('Logged out successfully.');

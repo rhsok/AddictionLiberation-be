@@ -17,7 +17,7 @@ export const generateAccessToken = (user: any): string => {
       id: user.id,
       name: user.username,
       email: user.email,
-      scope: 'read',
+      role: user.role,
     },
     process.env.ACCESS_TOKEN_SECRET!,
     {
@@ -28,19 +28,17 @@ export const generateAccessToken = (user: any): string => {
 
 export const generateRefreshToken = (userId: string): string => {
   return jwt.sign({ id: userId }, process.env.REFRESH_TOKEN_SECRET!, {
-    expiresIn: '7d',
+    expiresIn: '14d',
   });
 };
 
 export const sendRefreshToken = (res: Response, token: string): void => {
   console.log('Setting refresh token cookie');
-  res.cookie('jid', token, {
-    httpOnly: true,
-    path: '/',
-    // secure: true,
-    // secure: process.env.NODE_ENV === 'production',
-    sameSite: 'none',
-    maxAge: 7 * 24 * 60 * 60 * 1000,
+  res.cookie('jwt', token, {
+    httpOnly: true, // JavaScript에서 접근 불가
+    secure: true, // HTTPS 환경에서만 전송
+    sameSite: 'strict', // CSRF 방지
+    maxAge: 1000 * 60 * 60 * 24 * 14, // 14일
   });
 };
 
