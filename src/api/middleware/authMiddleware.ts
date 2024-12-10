@@ -1,12 +1,15 @@
+import { Role } from '@prisma/client';
 import { Request, Response, NextFunction } from 'express';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 
 // 사용자 정보 타입 정의
 interface User extends JwtPayload {
   id: string; // 추가적으로 필요한 필드 정의 가능
-  name: string;
   email: string;
-  scope: string;
+  role: Role;
+  username: string;
+  password: string;
+  refreshToken: string | null;
 }
 
 // Request 인터페이스 확장 (user 속성을 추가하여 확장)

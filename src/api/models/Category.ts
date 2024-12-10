@@ -38,11 +38,9 @@ interface CategoryResult {
 class CategoryModel {
   //카테고리 생성하는 매서드
   async createCategory(category: CategoryType): Promise<number> {
-    console.log('ci', category.id);
     const existingCategory = await prisma.category.findUnique({
       where: { name: category.name },
     });
-    console.log('re', existingCategory);
 
     if (existingCategory) {
       throw new Error('카테고리가 이미 존재합니다.');
@@ -77,7 +75,7 @@ class CategoryModel {
         post: true,
       },
     });
-    console.log('cate', categories);
+    // console.log('cate', categories);
 
     const result: CategoryResult = {
       main: [],

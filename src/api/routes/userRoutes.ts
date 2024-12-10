@@ -88,6 +88,27 @@ router.post('/login', userController.loginUser);
 
 /**
  * @swagger
+ * /api/users/logout:
+ *   post:
+ *     summary: Logout a user
+ *     tags: [Users]
+ *     description: This endpoint logs out a user by clearing the refresh token from the database and removing the cookie.
+ *     responses:
+ *       200:
+ *         description: Successfully logged out.
+ *       401:
+ *         description: No token provided.
+ *       403:
+ *         description: Invalid token.
+ *       404:
+ *         description: User not found.
+ *       500:
+ *         description: Internal server error.
+ */
+router.post('/logout', userController.logoutUser);
+
+/**
+ * @swagger
  * /api/users/refresh_token:
  *   post:
  *     summary:  리프레시 토큰으로 엑세스토큰 리프레시

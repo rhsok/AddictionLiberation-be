@@ -2,6 +2,7 @@ import { Router } from 'express';
 import postController from '../controllers/postController';
 import authenticateToken from '../middleware/authMiddleware';
 import { upload } from '../../lib/imageUpload';
+import { authorizeAdmin } from '../middleware/authorizeAdmin';
 const router: Router = Router();
 
 /**
@@ -76,7 +77,7 @@ const router: Router = Router();
  *      500:
  *        description: Server error
  */
-router.post('/', authenticateToken, postController.createPost);
+router.post('/', authenticateToken, authorizeAdmin, postController.createPost);
 
 /**
  * @swagger

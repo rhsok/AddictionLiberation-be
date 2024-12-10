@@ -8,6 +8,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Role {
+  USER
+  ADMIN
+}
+
 model User {
   id           String  @id @default(uuid())
   username     String  @unique
@@ -15,6 +20,7 @@ model User {
   password     String
   refreshToken String?
   posts        Post[]  @relation("UserPosts")
+  role         Role    @default(USER)
 }
 
 model Post {
