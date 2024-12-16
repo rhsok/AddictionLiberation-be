@@ -79,12 +79,12 @@ class UserController {
   }
 
   async setRefreshToken(req: Request, res: Response): Promise<Response> {
-    // const token = req.cookies.jwt;
-    const authHeader = req.headers['authorization'];
-    const token =
-      authHeader && authHeader.startsWith('Bearer ')
-        ? authHeader.split(' ')[1] // "Bearer " 이후의 토큰 추출
-        : null; // 토큰이 없으면 null로 설정
+    const token = req.cookies.jwt;
+    // const authHeader = req.headers['authorization'];
+    // const token =
+    //   authHeader && authHeader.startsWith('Bearer ')
+    //     ? authHeader.split(' ')[1] // "Bearer " 이후의 토큰 추출
+    //     : null; // 토큰이 없으면 null로 설정
 
     if (!token) {
       return res.status(401).send('No token provided.');
@@ -101,41 +101,40 @@ class UserController {
     console.log('유저찾기', user);
     if (!user || !user.id) return res.status(404).send('User not found.');
     const accessToken = generateAccessToken(user);
-    const refreshToken = generateRefreshToken(user.id);
     console.log('엑세스토큰 재발급', accessToken);
-    //sendRefreshToken(res, refreshToken);
     return res.json({ token: accessToken });
   }
 
   async logoutUser(req: Request, res: Response): Promise<Response> {
     try {
       //클라이언트의 쿠키 삭제
+      console.log('jw')
       res.clearCookie('jwt', {
         httpOnly: true,
         secure: true,
         sameSite: 'strict',
       });
 
-      const authHeader = req.headers['authorization'];
-      const token =
-        authHeader && authHeader.startsWith('Bearer ')
-          ? authHeader.split(' ')[1]
-          : null;
-      if (!token) {
-        return res.status(401).send('No token provieded.');
-      }
-      const decoded = verifyToken(token, secret);
-      if (!decoded) {
-        return res.status(403).send('Invalid token.');
-      }
-      const userId = decoded.id;
-      const user = await UserModel.findById(userId);
-      if (!user) {
-        return res.status(404).send('User not found.');
-      }
+      // const authHeader = req.headers['authorization'];
+      // const token =
+      //   authHeader && authHeader.startsWith('Bearer ')
+      //     ? authHeader.split(' ')[1]
+      //     : null;
+      // if (!token) {
+      //   return res.status(401).send('No token provieded.');
+      // }
+      // const decoded = verifyToken(token, secret);
+      // if (!decoded) {
+      //   return res.status(403).send('Invalid token.');
+      // }
+      // const userId = decoded.id;
+      // const user = await UserModel.findById(userId);
+      // if (!user) {
+      //   return res.status(404).send('User not found.');
+      // }
 
-      // 사용자 리프레시 토큰을 데이터베이스에서 제거
-      await UserModel.removeRefreshToken(userId);
+      // // 사용자 리프레시 토큰을 데이터베이스에서 제거
+      // await UserModel.removeRefreshToken(userId);
 
       // 응답 설정 - 클라이언트에서 저장된 토큰을 제거하도록 지시
       return res.status(200).send('Logged out successfully.');

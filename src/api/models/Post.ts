@@ -2,6 +2,7 @@ import path from 'path';
 import { prisma } from '../../config/db';
 import { RequestWithUser } from '../middleware/authMiddleware';
 
+
 type UpdatePost = {
   title?: string;
   subtitle?: string;
@@ -24,7 +25,7 @@ export interface CategoryInput {
 export interface CreatePostInput {
   title: string;
   content: string;
-  authorId: string | undefined;
+  authorId: string;
   subtitle: string;
   videoUrl: string;
   published: boolean;
@@ -65,7 +66,7 @@ class PostModel {
     req: RequestWithUser,
     postData: CreatePostInput
   ): Promise<any> {
-    console.log('0', postData);
+    console.log('postData', postData);
     const categoryOrders: CategoryOrder[] = await Promise.all(
       postData.categories.map(async (category) => {
         const count = await prisma.postCategory.count({
@@ -79,13 +80,13 @@ class PostModel {
       })
     );
 
-    const authorId = req.user?.id;
+   const authorId = req.userId;
 
     return prisma.post.create({
       data: {
         title: postData.title,
         content: postData.content,
-        authorId: authorId || '',
+        authorId: authorId || postData.authorId,
         subtitle: postData.subtitle,
         videoUrl: postData.videoUrl,
         published: postData.published ?? false,
@@ -110,7 +111,7 @@ class PostModel {
   /**이미지 업로드 */
   async saveImage(file: File): Promise<string> {
     const fileName = file.path.split('/').slice(-1);
-    const fileUrl = `http://localhost:8000/api/posts/images/${fileName}`;
+    const fileUrl = `${process.env.CORS_ORIGIN}/posts/images/${fileName}`;
     return Promise.resolve(fileUrl); // 파일 경로를 반환
   }
 

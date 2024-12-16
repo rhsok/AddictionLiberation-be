@@ -17,7 +17,7 @@ const options = {
         },
       },
     },
-    servers: [{ url: 'http://localhost:8000' }],
+    servers: [{ url: 'https://api.addictionliberation.kr' }],
   },
   apis: ['./src/api/routes/*.ts'],
 };

@@ -12,7 +12,7 @@ const router = Router();
 
 /**
  * @swagger
- * /api/post-types:
+ * /post-types:
  *   post:
  *     summary: Create a new post type
  *     tags: [PostTypes]
@@ -45,7 +45,7 @@ router.post('/', postTypeController.createPostType);
 
 /**
  * @swagger
- * /api/post-types:
+ * /post-types:
  *   get:
  *     summary: Get all post types
  *     tags: [PostTypes]
@@ -65,7 +65,7 @@ router.get('/', postTypeController.getPostTypes);
 
 /**
  * @swagger
- * /api/post-types/{id}:
+ * /post-types/{id}:
  *   get:
  *     summary: Get a single post type by ID
  *     tags: [PostTypes]
@@ -92,7 +92,7 @@ router.get('/:id', postTypeController.getPostType);
 
 /**
  * @swagger
- * /api/post-types/{id}:
+ * /post-types/{id}:
  *   put:
  *     summary: Update a post type by ID
  *     tags: [PostTypes]
@@ -131,7 +131,7 @@ router.put('/:id', postTypeController.updatePostType);
 
 /**
  * @swagger
- * /api/post-types/{id}:
+ * /post-types/{id}:
  *   delete:
  *     summary: Delete a post type by ID
  *     tags: [PostTypes]

@@ -10,7 +10,7 @@ const now = Math.floor(Date.now() / 1000);
 // 액세스 토큰 생성, 15분 동안 유효
 export const generateAccessToken = (user: any): string => {
   // 액세스 토큰 생성, 15분 동안 유효
-  console.log('user', user);
+
 
   return jwt.sign(
     {
@@ -37,7 +37,7 @@ export const sendRefreshToken = (res: Response, token: string): void => {
   res.cookie('jwt', token, {
     httpOnly: true, // JavaScript에서 접근 불가
     secure: true, // HTTPS 환경에서만 전송
-    sameSite: 'strict', // CSRF 방지
+    sameSite: 'none', // CSRF 방지
     maxAge: 1000 * 60 * 60 * 24 * 14, // 14일
   });
 };

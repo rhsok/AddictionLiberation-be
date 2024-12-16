@@ -1,19 +1,28 @@
 import { Request, Response, NextFunction } from 'express';
 import { User } from '@prisma/client'; // Prisma User 타입을 가져옵니다.
+import { RequestWithUser } from './authMiddleware';
+import { prisma } from '../../config/db';
 
-declare global {
-  namespace Express {
-    interface Request {
-      user?: User; // JWT에서 파싱된 사용자 정보
-    }
-  }
-}
-export const authorizeAdmin = (
-  req: Request,
+// declare global {
+//   namespace Express {
+//     interface Request {
+//       userId?: User; // JWT에서 파싱된 사용자 정보
+//     }
+//   }
+// }
+
+export const authorizeAdmin = async(
+  req: RequestWithUser,
   res: Response,
   next: NextFunction
 ) => {
-  const user = req.user; // 로그인한 유저 정보 (JWT에서 추출)
+  const userId = req.userId; // 로그인한 유저 정보 (JWT에서 추출)
+  console.log('user', userId)
+
+  const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
 
   if (!user || user.role !== 'ADMIN') {
     return res

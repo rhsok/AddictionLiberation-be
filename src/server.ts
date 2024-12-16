@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import swaggerUi from 'swagger-ui-express';
 import dotenv from 'dotenv';
-import { redisClient, prisma } from './config/db';
+import { prisma } from './config/db';
 import routes from './api/routes';
 
 // 환경 변수를 로드합니다.
@@ -19,7 +19,7 @@ const port: number | string = process.env.PORT || 8000;
 
 // CORS 설정에 환경 변수 사용
 const corsOptions = {
-  origin: process.env.CORS_ORIGIN, // 환경 변수에서 도메인 가져오기
+  origin:['https://addictionliberation.kr','https://www.addictionliberation.kr'], // 환경 변수에서 도메인 가져오기 
   optionsSuccessStatus: 200, // 일부 레거시 브라우저의 호환성을 위해
   credentials: true,
 };
@@ -32,8 +32,8 @@ app.use(express.json());
 // '/api-docs' 경로에서 Swagger UI를 제공합니다. 이 UI를 통해 API를 문서화하고 상호 작용할 수 있습니다.
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-// 기본 API 라우트를 설정합니다. 모든 API 엔드포인트는 '/api'로 시작합니다.
-app.use('/api', routes);
+
+app.use('/', routes);
 
 // '/health' 경로에서 데이터베이스 및 Redis 연결 상태를 확인합니다.
 app.get('/health', async (req, res) => {
@@ -41,12 +41,12 @@ app.get('/health', async (req, res) => {
     //PostgreSQL 연결 확인
     const pgResult = await prisma.$queryRaw`SELECT NOW()`;
     //Redis 연결 확인
-    await redisClient.set('health', 'ok');
-    const redisResult = await redisClient.get('health');
+    // await redisClient.set('health', 'ok');
+    // const redisResult = await redisClient.get('health');
 
     res.send({
       postgres: pgResult,
-      redis: redisResult,
+      // redis: redisResult,
     });
   } catch (error: any) {
     res.status(500).send({ error: error.message });
